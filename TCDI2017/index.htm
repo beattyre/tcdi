@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>DVRPC - Transportation and Community Development Initiative (TCDI)</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css">
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+	<!-- Load Leaflet from CDN-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="css/typeahead.js-bootstrap.css" >
+    <link rel="stylesheet" href="css/esri-leaflet-geocoder.css" />
+    <link rel="stylesheet" href="css/bootstrap-slider.css" />
+    <link rel="stylesheet" href="css/loading.css" />
+    <link rel="stylesheet" href="css/app.css" />
+
+    <style>
+        html, body, #map, #sidebar, #container {
+        	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+            height: 100%;
+            margin: 0px;
+        }
+        #sidebar {     
+	       border-right: 1px solid #E2E2E2;
+	       background-color:white;
+        }
+		body {
+            padding-top: 50px;
+        }
+        label {
+        }
+        .panel-heading a:hover {
+            text-decoration: none;
+        }
+        #loading {
+            position: absolute;
+            width: 220px;
+            height: 19px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -110px;
+            z-index: 20001;
+        }
+        .navbar .navbar-brand {
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+            white-space: nowrap;
+        }
+		.navbar-inverse{
+        background-color:#526018;
+		border: none;
+		}
+		.navbar-inverse .navbar-nav > li > a {
+            color: white;
+        }
+        .tt-dropdown-menu {
+            overflow: auto;
+        }
+        .tt-hint, .tt-query {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .typeahead-header {
+            margin: 0 5px 5px 5px;
+            padding: 3px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        .search-container {
+            width: 250px;
+        }
+        #searchbox {
+            -webkit-border-top-left-radius: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            -moz-border-top-left-radius: 4px;
+            -moz-border-bottom-left-radius: 4px;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .modal-header {
+         background-color:#526018;
+        }
+        .modal-title  {
+        color: #FFF;
+        }
+        .close {
+            float: right;
+            font-size: 21px;
+            font-weight: bold;
+            line-height: 1;
+            color: black;
+            text-shadow: 0px 1px 0px rgb(255, 255, 255);
+            opacity: 1;
+        }
+        .panel-primary >.panel-heading {
+        background-color:;
+        color: black;
+        }
+        .panel-primary {
+            border-color: ;
+        }
+        .media{
+        padding: 0px 10px 0px 10px;
+        }
+        h3, .h3{
+        font-size: 16px;
+        font-weight: bold;
+        }
+        .btn-primary {
+        background-color: #333A97;
+        border-color: #333A97;
+        height:35px;
+        }
+        #toolbar{
+        background-color: #FFC709;
+        border-top: 2px solid white;
+        }
+        .leaflet-label {
+        background: rgb(235, 235, 235);
+        background: rgba(235, 235, 235, 0.81);
+        background-clip: padding-box;
+        border-color: #777;
+        border-color: rgba(0,0,0,0.25);
+        border-radius: 4px;
+        border-style: solid;
+        border-width: 4px;
+        color: #111;
+        display: block;
+        font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        padding: 1px 6px;
+        position: absolute;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        pointer-events: none;
+        white-space: nowrap;
+        z-index: 6;
+        }
+        .leaflet-label.leaflet-clickable {
+        cursor: pointer;
+        pointer-events: auto;
+        }
+        .leaflet-label:before,
+        .leaflet-label:after {
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        content: none;
+        position: absolute;
+        top: 5px;
+        }
+        .leaflet-label:before {
+        border-right: 6px solid black;
+        border-right-color: inherit;
+        left: -10px;
+        }
+        .leaflet-label:after {
+        border-left: 6px solid black;
+        border-left-color: inherit;
+        right: -10px;
+        }
+        .leaflet-label-right:before,
+        .leaflet-label-left:after {
+        content: "";
+        }
+
+        .form-control {
+        border-radius: 0px;
+        }
+        .input-group{
+        width:200px;
+        }
+        .leaflet-control-zoom,.leaflet-control-layers {
+        border:none;
+        }
+        .form-control{
+        border-radius:0px;
+        }
+        a.one, a.one:hover, a.one:focus {
+        color: #0084C8;
+        text-decoration:underline;
+        }	
+        .navbar-inverse .navbar-nav > .dropdown > a .caret {
+            border-top-color: white;
+            border-bottom-color: white;
+        }
+        .dropdown > ul> li > a:hover, .dropdown > ul>  li > a:focus {
+            background-color: #0084C8!important;
+            text-decoration: none;
+        }
+        .btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.open .dropdown-toggle.btn-primary{
+        	color:#fff;
+        	background-color:#5B6BFC;
+        	border-color:#0084C8
+        }
+        .panel-default > .panel-heading {
+            background-color: #282828;
+            border-color: black;
+            color: white;
+        }	
+        }
+   /*     a, a:hover, a:focus {
+            color: black;
+            text-decoration: none;
+        }
+    */    
+        .panel-default {
+            border-color: black;
+        }
+        .nav-tabs {
+            border-bottom: 1px solid black;
+        }
+        li.one {
+        margin-left: 35px;
+        font-style: italic;
+        }
+        .panel-default > .panel-heading {
+            background-color: #6FAA7C;
+            border-color: #DDD;
+            color: #333;
+        }
+        .panel-group .panel {
+            margin-top: -11px;
+            overflow: hidden;
+            border-radius: 0px;
+        }
+        .shield {
+            vertical-align: middle;
+        	height: 30px;
+        	width: 33px;
+        	padding-right:5px;
+        }
+        .label {font-size: 20px;
+        	color: black;
+        	margin-left:-10px;
+        	}
+        .nav-tabs > li.active > a,
+        .nav-tabs > li.active > a:hover,
+        .nav-tabs > li.active > a:focus{
+            color: w;
+            background-color: white;  
+        } 	
+        .nav-tabs > li {
+            float: left;
+            margin-bottom: -1px;
+        }
+        #myTab li a { border-color:#6D6D6D;background-color:#EECD57;font-weight: bold; color:white; }
+        #myTab li.active a {border-bottom-color: transparent; background-color:#A1AD6B; font-weight: bold; color:white; }
+
+        .leaflet-control-zoom,.leaflet-control-layers {
+        border:none;
+        }
+        input[type=range] {
+        -webkit-appearance: none;
+        height:130px;
+        cursor: pointer;
+        }
+         #slidercase {
+            display: inline-flex;
+           /* position: absolute; */
+         /*   bottom: 10px;
+            left: 5px;
+            */
+            z-index: 1001;
+            padding: 8px;
+            background: rgba(140, 140, 140, 0.85);
+            cursor: pointer;
+        }
+        #side1 {
+          float: right;
+          width: 100%;
+        }
+        #side2 {
+          float: left;
+          width: 200px;
+          margin-left: -200px;
+        }
+        .checkbox label {
+            font-size: 11px;
+        }
+      
+        .popup {
+            max-width: 300px;
+          /*  font-family: cursive; */
+        }
+        #info-icon {
+            color: #aaa8a8;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .modal-header {
+            padding: 10px 15px 5px !important;
+            background-color: #526018 !important;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            color: #E8BC1F;
+        }
+        .modal-body .nav > li > a {
+            padding: 10px 8px !important;
+        }
+        #reduceTabs {
+            border-bottom: 0px solid black;
+        }  
+        a.zoomToCMP:link {color:#333;font-size: 11px;cursor: pointer;}
+        a.zoomToCMP:visited {color:#333;font-size: 11px;cursor: pointer;}
+        a.zoomToCMP:hover {color:#333;font-size: 11px;cursor: pointer;}
+
+    </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.2.0/respond.js"></script>
+  </head>
+
+  <body>
+  	<!-- Start Nav Bar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+    	<!-- Nav Bar Left -->
+		<div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span>
+                <a href="http://www.dvrpc.org" target="_new">
+                    <img class="dvrpclogo" style="margin:10px 0px 0px 20px" src="img/dvrpc_logo_small.png" />
+                </a>
+			    <a href="http://www.dvrpc.org/TCDI/" target="_new">
+                    <!-- Logo Only <img class="dvrpclogo" style="margin:5px 0px 0px 10px" src="img/header/logo.png" /> -->
+                    <img class="dvrpclogo" style="margin:5px 0px 0px 10px" src="img/header/logo-title.png" />
+				 </a>
+            </span>
+        </div>
+
+       	<!-- Nav Bar Right -->
+		  <ul class="nav navbar-nav navbar-right"> 
+
+            <!-- Data Access (TCDI is not on open data - CMP Legacy Code) <button type="button" style=" margin:10px 30px 0px 4px;float:right;color:#FFF;background-color:#E8BC1F;" class="btn btn-sm" a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#dataModal').modal('show'); return false;"><i class="glyphicon glyphicon-download-alt" style="color:#FFF"></i>&nbsp;&nbsp;<b>Access Data</b>
+            </button> -->
+
+            <button type="button" style=" margin:10px 30px 0px 4px;float:right;color:#FFF;background-color:#E8BC1F;" class="btn btn-sm" a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#HowModal').modal('show'); return false;"><i class="icon-question-sign" style="color:#FFF"></i>&nbsp;&nbsp;<b>How to Use</b>
+            </button>          
+            <button type="button" style=" margin:10px 10px 0px 4px;float:right;color:#FFF;background-color:#E8BC1F;" class="btn btn-sm" a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#aboutModal').modal('show'); return false;"><i class="icon-info-sign" style="color:#FFF"></i>&nbsp;&nbsp;<b>About</b>
+            </button>
+         </ul>
+    </div>
+    <!-- End Nav Bar -->
+	
+	<!-- Start Main Container -->
+    <div class="row" id="container">
+
+    	<!-- Start Sidebar -->
+		<div class="col-sm-5 col-lg-5" id="sidebar" style="padding: 10px; overflow: auto;">
+
+			<!-- Sidebar Tabs -->
+			 <ul class="nav nav-tabs" id="myTab">
+                <li class="active"><a href="#layers" data-toggle="tab"><i class="glyphicon glyphicon-road"></i>&nbsp;TCDI Projects</a></li>
+				<li><a href="#Results" data-toggle="tab" ><i class="glyphicon glyphicon-list-alt"></i>&nbsp;Project Information</a></li>
+            </ul>
+			<div class="tab-content" style="padding-top: 10px;">
+
+					<!-- Begin Legend -->
+	                <div class="tab-pane active" id="layers">
+	                    <div class="panel-group legend">
+	                        <div class="panel panel-default">
+	                            <div id="overlay-layers" class="panel-collapse collapse in">
+	                                <div class="panel-body legPanel" style="padding: 0px 20px;">
+	                                	<input type="checkbox" class="checked_all" style="margin-top:3px" > Select/Deselect All
+	                                <!-- Test Begin -->
+	                                <div class="row">
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-02"><div class="glyphicon glyphicon-list-alt yr2002"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2002" class="legendCheck" name="layerTCDI" z-index="1">
+			                                			<img src="img/YR2002DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>                    		                             			
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-07"><div class="glyphicon glyphicon-list-alt yr2007"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2007" class="legendCheck" name="layerTCDI" z-index="5">
+			                                			<img src="img/YR2007DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>
+		                            	</div>	
+
+	                                <div class="row">
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-03"><div class="glyphicon glyphicon-list-alt yr2003"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2003" class="legendCheck" name="layerTCDI" z-index="2">
+			                                			<img src="img/YR2003DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>                    		                             			
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-10"><div class="glyphicon glyphicon-list-alt yr2010"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2010" class="legendCheck" name="layerTCDI" z-index="6">
+			                                			<img src="img/YR2010DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>
+		                            	</div>
+
+	                                <div class="row">
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-04"><div class="glyphicon glyphicon-list-alt yr2004"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2004" class="legendCheck" name="layerTCDI" z-index="3">
+			                                			<img src="img/YR2004DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>                    		                             			
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-12"><div class="glyphicon glyphicon-list-alt yr2012"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2012" class="legendCheck" name="layerTCDI" z-index="7">
+			                                			<img src="img/YR2012DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>
+		                            	</div>	     
+
+	                                <div class="row">
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-05"><div class="glyphicon glyphicon-list-alt yr2005"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2005" class="legendCheck" name="layerTCDI" z-index="4">
+			                                			<img src="img/YR2005DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>                    		                             			
+		                                <div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<a href="#" data-toggle="modal" data-target="#Projects-15"><div class="glyphicon glyphicon-list-alt yr2015"></div></a>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2015" class="legendCheck" name="layerTCDI" z-index="8">
+			                                			<img src="img/YR2015DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>
+		                            	</div> 
+
+		                            <div class="row">
+		                            	<div class="col-sm-3 col-lg-3"></div>
+		                            	<div class="col-sm-6 col-lg-6">
+		                                	<div class="panel-heading legendButton">
+			                                	<div class="glyphicon glyphicon-list-alt yr2017 project-list-icon"><a href="#" data-toggle="modal" data-target="#Projects-17"></a></div>
+			                                	<label style="padding: 0px;">
+				                                	<input type="checkbox" checked id="2017" class="legendCheck" name="layerTCDI">
+			                                			<img src="img/YR2017DARK.png" class="legendButton"/>
+		                                		</label>
+		                                	</div>
+		                                </div>	
+		                                <div class="col-sm-3 col-lg-3"></div>
+		                            	</div>		                                
+	                            	</div>                                                               	                                                         	
+	                        </div>
+	                    </div>
+	                </div>
+	                
+	                    	
+ 
+			                        <!-- TEST END -->                             	              
+	                <!-- End Legend -->
+
+	                <!-- Opacity Slider -->
+	                <div class="panel-body legPanel" style="padding: 0px 15px;margin-bottom:10px">
+	                    <h5 style="background-color:#E0E0E0;height: 20px;padding: 2px;"><B>&nbsp;Project Opacity</B></h5>  
+	                        <div class="navbar nav-right" z-index="50">
+								<div id="slidercase" class="slidercase">
+									<input id="slide" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="65" data-slider-orientation="horizontal">
+				                </div>									
+							</div>  
+	                    <br> 
+	                     <br>        
+	                        </div>
+					</div>
+
+	        		<!-- Start Project Results Pane -->
+					<div class="tab-pane" id="Results">
+	                    <div class="panel-group">
+							<div class="panel panel-default">
+								<div id="overlay-layers" class="panel-collapse collapse in" >		
+									<div class="panel-body" style="padding: 20px 0px 0px 0px;">		
+	                                    <span id="click_help" class="text-muted">&nbsp;(Click subcorridor or roadway for information)</span> 
+	                                  <!--  <span id="cmp_info" style="display:none"><h3 style="text-align:center;background-color:#E0E0E0;margin: 0px 25px 0px 25px;"><i class="glyphicon glyphicon-road"></i>&nbsp;CMP Subcorridor Information</h3></span> -->    
+									    <div id="infosidebar"style="padding:10px"></div>
+	                                    <div id="selectedFeatures" style="width: auto;margin: 10px 10px 10px 15px;">&nbsp;</div>			
+									</div>
+							     </div>
+							</div>
+	                    </div>
+	                </div>
+	                <!-- End Project Results Pane -->
+	            </div>
+        	</div>     
+        	<!-- End Sidebar -->
+
+        <!-- Map -->	        	
+        <div class="col-sm-7 col-lg-7" id="map">	
+        </div>
+        <div class="loading-panel stat-map" style="display:none;"><div class="spin-item"><div class="item-inner"><div class="item-loader-container"><div class="la-ball-spin-clockwise la-2x"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></div></div></div>
+    </div>
+    <!-- End Main Container -->
+
+
+  	<!-- Start About Modal-->
+  	<div class="modal fade" id="aboutModal">
+		<div class="modal-dialog"style="width:620px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"> <img src="img/header/logo-title.png"/></h4>
+				</div>
+				<div class="modal-body">
+					 <ul id="aboutTabs" class="nav nav-tabs" style="font-weight: bold;">
+						<li class="active"><a href="#about" data-toggle="tab"><i class="icon-road"></i>&nbsp;About</a></li>
+						  <li><a href="#contact" data-toggle="tab"><i class="icon-envelope"></i>&nbsp;Contact</a></li>   
+						<li><a href="#disclaimer" data-toggle="tab"><i class="icon-exclamation-sign"></i>&nbsp;Disclaimer</a></li>
+					</ul>
+
+					<!-- About Modal Tab Content Begins -->
+					<div id="aboutTabsContent" class="tab-content" style="padding-top: 10px;">
+
+					<!-- About Landing Tab -->
+						<div class="tab-pane fade active in" id="about">
+							<p>
+								The Transportation and Community Development Initiative (TCDI) is an opportunity for the Delaware Valley Regional Planning Commission (DVRPC) to support growth in the individual municipalities of the Delaware Valley through initiatives that implement the region’s long-range plan, Connections 2040. Begun in 2002, TCDI provides a mechanism for local governments to undertake locally-directed actions to improve their communities, which in turn implements their local and county comprehensive plans and supports the goals and vision of Connections 2040. TCDI seeks to support and leverage state and county programs, by providing funding to undertake planning, analysis or design initiatives which enhance or improve the efficiency of the regional transportation system and implement the long-range plan. Funding for the TCDI program comes from a combination of state Transportation dollars and federal STP funds. Through fiscal years 2002-2017, DVRPC has distributed $16.0 million to over 230 communities throughout the region for TCDI planning grants.		
+							</p>
+							 <br><font color='red' size='1px'><i>Data Source: <h3><b>WHEN WAS THIS DATA UPDATED?!?!?!</b></h3></i></font></br>
+							  <font color='red' size='1px'><i>Last Updated: July 2017</i></font></br>
+						</div>
+
+						<!-- Disclaimer Tab -->
+						<div class="tab-pane fade" id="disclaimer">	
+								<p>This web page is a public resource of general information. The Delaware Valley Regional Planning Commission (DVRPC) makes no warranty, 
+									representation, or guarantee as to the content, sequence, accuracy, timeliness, or completeness of any of the spatial data or database 
+									information provided herein. DVRPC and partner state, local, and other agencies shall assume no liability for errors, omissions, or 
+									inaccuracies in the information provided regardless of how caused; or any decision made or action taken or not taken by any person relying 
+									on any information or data furnished within.</p>
+						</div>
+
+
+						<!-- Contact Tab -->
+						 <div class="tab-pane fade" id="contact">
+                            <p>
+                            <strong>Karen Cilurso, PP, AICP</strong><br/>
+                            Manager, Community Reviatlization <br/>
+                            Office of Smart Growth<br/>
+                            Phone: 215-238-2876 <br/>
+                            <a class="one" href="mailto:kpcilurso@dvrpc.org">kpcilurso@dvrpc.org </a> 
+                            </p>		
+						</div>
+					</div>
+					<!-- About Modal Tab Content Ends -->	
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+    </div><!-- End About Modal -->
+
+    <!-- Start How Modal-->
+    <div class="modal fade" id="HowModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#0074ad">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                     <h4 class="modal-title" ><strong>How to Use</strong> </h4>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                    This web site allows you to view and identify TCDI projects that have been awarded by DVRPC from 2002 - 2017. Information such as project name, amount and description can be reviewed. <a href="http://www.dvrpc.org/TCDI/pdf/2016-06_ALL_TCDI_PROJECTS_2002-2017.pdf" target="_blank" style="color:#3d83b0">Click here </a> to view a list of all TCDI projects from 2002 - 2017. 
+                    </p>
+
+                    <h4>Map Navigation:</h4>
+                    <p>- Click-and-drag on the map to pan, or use the mouse wheel to zoom in/out.  You may also use the +/- button controls to zoom in/out of the map.
+                    Double-clicking on an area will also zoom in. If you hold down the <B>Shift Key </B>and drag a <Font color="red">box </Font>on the map, it will zoom to the area drawn.<br><br> 
+                    - Use the menu on the left to turn on/off selected corridors by state. You can turn all of the corridors on/off quickly by clicking on Select/Clear All.<br><br>
+                    - Use the 'Corridor Opacity' slider bar <img id="popup" src="img/opacity.png" title="opacity slider"/> to decrease/increase the transparency level of the CMP corridors.<br><br>
+                    - Click the <b>zoom to region</b> button <img src="css/img/region.png" title="zoom to region" style="" /> to zoom to the initial map extent. 
+                    </p>
+        
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- End How Modal -->
+
+    <!-- 2002 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-02">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color:#0074ad">
+		            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		            	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2002</strong></h4>
+		        </div> 
+			<div class="modal-body">
+				<ul id="tabs02" class="nav nav-tabs">
+					<li class="active"><a href="#PA02" data-toggle="tab"><b>Pennsylvania</b></a></li>
+					<li><a href="#NJ02" data-toggle="tab"><b>New Jersey</b></a></li>
+				</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content02" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fad active in" id="PA02">
+								<ul>
+									<li>Multiple Municipalities (Bucks County) - Route 13 Revitalization Study ($100,000)</li>
+									<li>Penndel Borough - Business District Revitalization ($36,000)</li>
+									<li>Avondale Borough - Revitalization Plan ($30,000)</li>
+									<li>Coatesville City - Train Station Parking Feasibiltiy ($100,000)</li>
+									<li>South Coatesville Borough - Urban Core Revitalization/Train Station Feasibility ($52,000)</li>
+									<li>West Chester Borough - Wayfinding ($25,000)</li>
+									<li>Chester City - Downtown Improvement Strategy ($68,000)</li>
+									<li>Marcus Hook Borough - TOD Phase 1 ($68,000)</li>
+									<li>Millbourne Borough & Upper Darby Township - Market Street ($26,000)</li>
+									<li>Upper Darby Township & Yeadon Borough - Fernwood Train Station ($50,000)</li>
+									<li>Bridgeport Borough - Community Revitalization Plan ($43,000)</li>
+									<li>Cheltenham Township - Glenside Station Area Development Plan ($60,000)</li>
+									<li>Lower Merion Township - Ardmore Transit Center Plan ($56,000)</li>
+									<li>Pottstown Borough - High Street Reconfiguration ($40,000)</li>
+									<li>Philadelphia City - Update of Land Codes ($71,000)</li>
+									<li>Philadelphia City - Girard Avenue ($100,000)</li>
+									<li>Philadelphia City - Vacant & Underutilized Land Study ($75,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ02">
+								<ul>
+									<li>Beverly City - Waterfront Park and TOD ($40,000)</li>
+									<li>Burlington City - Gateway Study from Route 130 to Broad Street (TOD) ($40,000)</li>
+									<li>Wrightstown Borough - TOD and Gateway to Route 130 Study ($60,000)</li>
+									<li>Camden City - Cramer Hill Redevelopment Plan ($46,900)</li>
+									<li>Collingswood Borough - Heart of Collingswood ($60,000)</li>
+									<li>Gloucester City - Broadway and Route 130 Corridor ($62,000)</li>
+									<li>Glassboro Borough - Rowan Boulevard ($50,000)</li>
+									<li>Paulsboro Borough - Redevelopment of BP Site ($80,000)</li>
+									<li>Trenton City - Cass Street ($61,100)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>	
+		</div>
+	</div>
+
+	<!-- 2003 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-03">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2003</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs03" class="nav nav-tabs">
+				<li class="active"><a href="#PA03" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ03" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content03" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fade active in" id="PA03">
+								<ul>
+									<li>Bristol Borough - Municipal Planning Update ($48,000)</li>
+									<li>Multiple Municipalities (Bucks County) - Town Center Revitalization ($50,000)</li>
+									<li>Coatesville City - Flats Reuse and Waterfront ($45,000)</li>
+									<li>Downingtown Borough - Transportation District Initiative ($100,000)</li>
+									<li>West Grove Borough - Retail Market Assessment ($32,000)</li>
+									<li>Lansdowne Borough - Redevelopment Area Plan ($40,000)</li>
+									<li>Upper Darby Township - Feasibility Study to Improve Union Avenue ($33,750)</li>
+									<li>Conshohocken Borough - Downtown Riverfront Linkages ($48,600)</li>
+									<li>Jenkintown Borough - Downtown Jenkintown ($100,000)</li>
+									<li>Narberth Borough - Montgomery Avenue Business District ($98,845)</li>
+									<li>Norristown Borough - BID ($100,000)</li>
+									<li>Philadelphia City - West Market Corridor TOD ($75,000)</li>
+									<li>Philadelphia City - Allegheny West ($75,000)</li>
+									<li>Philadelphia City - Center City Parking Evaluation ($76,000)</li>
+									<li>Philadelphia City - Reinvestment Guidelines ($75,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ03">
+								<ul>
+									<li>Burlington Township - Bicycle and Pedestrian Plan ($40,000)</li>
+									<li>Barrington Borough - Market Feasbility Study ($56,000)</li>
+									<li>Camden City - Downtown Transit Plan ($78,000)</li>
+									<li>Pennsauken Township - Waterfront Master Plan ($70,000)</li>
+									<li>Woodlyne Borough - CBD Plan ($14,800)</li>
+									<li>Glassboro Borough - Getting Around Glassboro ($78,000)</li>
+									<li>Monroe Township - Pedestrian Circulation Element ($48,000)</li>
+									<li>Hightstown Borough - Redevelopment Plan for White Horse Pike ($43,200)</li>
+									<li>Trenton City - Capital District Jitney ($70,000)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	</div>
+
+	<!-- 2004 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-04">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2004</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs04" class="nav nav-tabs">
+				<li class="active"><a href="#PA04" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ04" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content04" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fade active in" id="PA04">
+								<ul>
+									<li>Doylestown Borough - Community-Pedestrian Linkage ($34,800)</li>
+									<li>Quakertown Borough - Quakertown Alive! ($19,750)</li>
+									<li>Coatesville City - Redevelopment Feasibility Study ($100,000)</li>
+									<li>Phoenixville Borough - Market Feasbility Study ($33,600)</li>
+									<li>Lansdowne Borough - Redevelopment Plan/Overlay Zone (Baltimore Pike) ($55,000)</li>
+									<li>Lansdowne Borough - Traffic Design and Streetscape (Baltimore Pike) ($64,000)</li>
+									<li>Marcus Hook Borough - TOD Phase 2 ($34,600)</li>
+									<li>Cheltenham Township - Glenside Commercial District Circulation Study ($60,000)</li>
+									<li>Jenkintown Borough - Traffic calming ($100,000)</li>
+									<li>Jenkintown Borough - BID ($30,000)</li>
+									<li>Lansdale Borough - Downtown Destination Plan ($80,000)</li>
+									<li>Upper Moreland Township - Entrance to Memorial Park ($38,250)</li>
+									<li>Philadelphia City - North Delaware Riverfront Design ($95,000)</li>
+									<li>Philadelphia City - North Broad Street Transportation and Access Study ($80,000)</li>
+									<li>Philadelphia City - Germantown/Wayne Junction ($187,500)</li>
+									<li>Philadelphia City - Roxborough Gateway Project ($25,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ04">
+								<ul>
+									<li>Bordentown City - Land Development Ordiance ($40,000)</li>
+									<li>Burlington Township - Route 130 Redevelopment ($48,000)</li>
+									<li>Willingboro Township - Subdivision and Site Plan (DRAFT) ($43,500)</li>
+									<li>Camden City - Haddon Avenue Corridor Improvements ($43,500)</li>
+									<li>Chesilhurst Borough - Route 30 Study ($40,000)</li>
+									<li>Gloucester City - Circulation Plan ($80,000)</li>
+									<li>Glassboro Borough - Historic Train Station ($100,000)</li>
+									<li>Monroe Township - Revitalizing the Town Center ($40,000)</li>
+									<li>East Windsor Township - Traffic Infrastructure ($65,000)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	</div>
+
+	<!-- 2005 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-05">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2005</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs05" class="nav nav-tabs">
+				<li class="active"><a href="#PA05" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ05" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content05" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fade active in" id="PA05">
+								<ul>
+									<li>Bristol Borough - Transportation Facilities ($100,000)</li>
+									<li>Penndel Borough - Transportation System Enhancements ($96,000)</li>
+									<li>Downingtown Borough - Train Station Improvement Needs (KOZ) ($100,000)</li>
+									<li>Oxford Borough - Revitalization Planning ($60,000)</li>
+									<li>South Coatesville Borough - Community Revitalization Plan ($70,000)</li>
+									<li>Darby Borough - Zoning Ordinance Update ($29,000)</li>
+									<li>Lansdowne Borough - Gateway Park ($14,100)</li>
+									<li>Norwood Borough - Zoning Ordinance Update ($29,000)</li>
+									<li>Conshohocken Borough - Train Station Vision Plan ($39,600)</li>
+									<li>Lower Merion Township - Lower Merion TRID ($100,000)</li>
+									<li>North Wales Borough - Transit-Oriented Development (TOD) ($40,000)</li>
+									<li>Philadelphia City - Pedestrian-Crime ($75,000)</li>
+									<li>Philadelphia City - SOS Walkability Study ($80,000)</li>
+									<li>Philadelphia City - Centennial District Economic Development Plan ($75,000)</li>
+									<li>Philadelphia City - Mt. Airy Placemaking and Streetscape ($95,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ05">
+								<ul>
+									<li>Palmyra Borough - Broad Street Revitalization Plan ($40,000)</li>
+									<li>Riverside Township - Downtown Strategic Revitalization Plan and Redevelopment ($45,600)</li>
+									<li>Camden City - MLK Boulevard ($80,000)</li>
+									<li>Cherry Hill Township - Haddonfield Road Mobility ($30,085)</li>
+									<li>Gloucester Township - Blackwood-Clementon Road Greyfields Study ($56,000)</li>
+									<li>Monroe Township - Main Street - Phase V ($100,000)</li>
+									<li>Woodbury City - Bus HUB Plan ($48,000)</li>
+									<li>Trenton City - Zoning and Land Development Ordinance ($100,000)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	</div>
+
+	<!-- 2007 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-07">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2007</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs07" class="nav nav-tabs">
+				<li class="active"><a href="#PA07" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ07" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content07" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fade active in" id="PA07">
+								<ul>
+									<li>Bristol Borough - Landmark Towns Strategic Wayfinding ($100,000)</li>
+									<li>New Hope Borough - Shuttle Feasibility ($60,000)</li>
+									<li>Easttown Township - Devon Train Station ($60,000)</li>
+									<li>Tredyffrin Township - Sidewalk Project ($100,000)</li>
+									<li>Chester City - TOD Plan ($35,000)</li>
+									<li>Clifton Heights Borough - Main Street Master Plan ($60,000)</li>
+									<li>Media Borough - Transportation Options ($24,000)</li>
+									<li>Radnor Township - Garrett Hill ($48,000)</li>
+									<li>Springfield Township - Transportation System Enhancements ($100,000)</li>
+									<li>Upper Darby Township - Aronimink Station Redevelopment ($60,000)</li>
+									<li>Cheltenham Township - Shuttle Feasibility ($48,000)</li>
+									<li>Hatfield Borough - Traffic Calming Feasibility ($40,000)</li>
+									<li>Lower Merion Township - City Avenue District Ordinance ($100,000)</li>
+									<li>Narberth Borough - Mutli-Modal Green Streets ($100,000)</li>
+									<li>Souderton Borough - Streetscape Planning ($100,000)</li>
+									<li>OARC - Wister TOD ($90,000)</li>
+									<li>Philadelphia City - Laying the Foundation ($100,000)</li>
+									<li>Philadelphia City - Bicycle and Pedestrian Plan for CC, South and LN Philadelphia ($100,000)</li>
+									<li>Philadelphia City - Bicycle and Pedestrian Plan ($80,000)</li>
+									<li>Philadelphia City - North Broad and Erie Transportation Study ($80,000)</li>
+									<li>Philadelphia City - TOD Zoning Classifications ($75,000)</li>
+									<li>Philadelphia City - Center City Managing Congestion ($100,000)</li>
+									<li>PIDC - Broad Street Extension Feasibility Study ($100,000)</li>
+									<li>SCRUB - Logan Square ($45,000)</li>
+									<li>University City District - Transit-Center Development ($80,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ07">
+								<ul>
+									<li>Burlington City - Master Plan ($90,000)</li>
+									<li>North Hanover Township - Zoning Implementation/Revised Ordinances ($48,000)</li>
+									<li>Pemberton Township - Browns Mills Strategic Revitalization ($48,000)</li>
+									<li>Riverside Township - CBD Plan ($68,600)</li>
+									<li>Riverton Borough - Downtown Revitalization Plan ($44,800)</li>
+									<li>Wrightstown Borough - Ft. Dix Redevelopment ($48,000)</li>
+									<li>Barrington Borough - Route 30 Site Mart ($56,000)</li>
+									<li>Camden City - Zoning Updates ($40,000)</li>
+									<li>Cherry Hill Township - Golden Triangle ($48,000)</li>
+									<li>Haddonfield Borough - Form Based Code ($40,000)</li>
+									<li>Merchantville Borough - Parking Management Study ($32,000)</li>
+									<li>Multiple Municipalities (Camden County) - Black Horse Pike Economic Development ($120,000)</li>
+									<li>Glassboro Borough - Trolley Feasibility ($70,000)</li>
+									<li>Swedesboro Borough - Parking in CBD ($40,800)</li>
+									<li>Multiple Municipalities (Mercer County) - Smart Growth Zoning across Municipal Borders ($125,000)</li>
+									<li>Trenton City - Transit Linkage Plan ($80,000)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	</div>
+
+	<!-- 2010 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-10">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2010</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs10" class="nav nav-tabs">
+				<li class="active"><a href="#PA10" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ10" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content10" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fade active in" id="PA10">
+								<ul>
+									<li>Bensalem Township - East Coast Greenway ($60,000)</li>
+									<li>Multiple Municipalities (Bucks County) - Bicycle Strategy ($40,000)</li>
+									<li>Caln Township - Western Chester County Economic Development Plan ($100,000)</li>
+									<li>Phoenixville Borough - Wayfinding Study ($8,000)</li>
+									<li>Marcus Hook Borough - TRID ($50,000)</li>
+									<li>Millbourne Borough - Station Area TOD ($50,000)</li>
+									<li>Norristown Borough - Streetscape Master Plan ($45,000)</li>
+									<li>Pottstown Borough & West Pottsgrove Township - High Street Corridor ($65,000)</li>
+									<li>Upper Moreland Township - Willow Grove Train Station ($60,000)</li>
+									<li>Philadelphia City - Urban Design ($60,000)</li>
+									<li>Philadelphia City - Complete Streets ($86,000)</li>
+									<li>Philadelphia City - Pedestrian and Bicycle Plan ($62,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ10">
+								<ul>
+									<li>Moorestown Township - Main Street Town Center Parking Study ($50,000)</li>
+									<li>Mount Holly Township - Redevelopment Market and Feasibility ($75,000)</li>
+									<li>Pemberton Township - Town Center Redevelopment Plan ($28,400)</li>
+									<li>Camden City - CEDS ($48,000)</li>
+									<li>Camden City - Broadway Overlay District ($40,000)</li>
+									<li>Haddon Heights Borough - Form Based Code ($75,000)</li>
+									<li>Multiple Municipalities (Camden County) - West Maple Neighborhood Revitalization Plan ($60,000)</li>
+									<li>County-wide - SJ Transit Expansion Plan ($100,000)</li>
+									<li>Glassboro Borough - Design for Glassboro Town Center ($50,000)</li>
+									<li>Pitman Borough - Downtown Revitalization Plan and Marketing Study ($75,000)</li>
+									<li>Wenonah Borough - Downtown Traffic Circulation and Parking Management ($23,600)</li>
+									<li>Woodbury City - Nieghborhood Conservation Plan ($70,000)</li>
+									<li>Bordentown Township - Train Station Redevelopment ($75,000)</li>
+									<li>East Windsor Township - Route 33 Revitalization ($100,000)</li>
+									<li>Lawrence Township - Brunswick Pike Redevelopment ($55,000)</li>
+									<li>Trenton City - Fostering TOD ($75,000)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	</div>
+
+	<!-- 2012 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-12">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2012</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs12" class="nav nav-tabs">
+				<li class="active"><a href="#PA12" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ12" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="content12" class="tab-content" style="padding-top: 10px;">
+							<div class="tab-pane fade active in" id="PA12">
+								<ul>
+									<li>Chalfont Borough - Chalfont Borough Revitalization Project ($75,000)</li>
+									<li>Dublin Borough - Visioning ($12,000)</li>
+									<li>Penndel Borough - Multi Modal Improvements ($20,000)</li>
+									<li>Perkasie Borough - Town Center Development Plan ($40,000)</li>
+									<li>Malvern Borough - Malvern TOD ($64,000)</li>
+									<li>Multiple Municipalities (Chester County) - Route 1 Housing Affordability Study ($86,800)</li>
+									<li>Phoenixville Borough - Zoning Code Update ($90,000)</li>
+									<li>Tredyffrin Township - Commercial Zoning ($50,000)</li>
+									<li>Lansdowne Borough - Downtown Pedestrian Connections ($30,700)</li>
+									<li>Media Borough - Comprehensive Plan ($36,500)</li>
+									<li>Swarthmore Borough - Bicycle and Pedestrian Plan ($20,000)</li>
+									<li>Upper Darby Township - West Chester Pike Traffic Study ($71,000)</li>
+									<li>Abington Township - TRID ($60,000)</li>
+									<li>Lansdale Borough - Wayfinding ($40,000)</li>
+									<li>Lower Merion Township - Pedestrian Connection for City Ave ($50,000)</li>
+									<li>Norristown Borough - TOD Marketing ($60,000)</li>
+									<li>Souderton Borough - Souderton BID ($25,000)</li>
+									<li>Upper Dublin Township - TDR for Ft. Washington ($25,000)</li>
+									<li>Upper Merion Township - Moore Road & 1st Avenue Road Diet ($25,000)</li>
+									<li>Upper Moreland Township - Willow Grove Placemaking ($38,000)</li>
+									<li>Philadelphia City - 2035 District Plan and Zoning Revisions ($100,000)</li>
+									<li>Philadelphia City - Washington Avenue Streetscape and Design ($75,000)</li>
+									<li>Philadelphia City - Center City Cycle Track Signal Timing ($76,000)</li>
+									<li>Philadelphia City - East Kensington Community Development Plan ($30,000)</li>
+								</ul>
+							</div>
+							<div class="tab-pane" id="NJ12">
+								<ul>
+									<li>Burlington City - Zoning Update ($64,000)</li>
+									<li>Mansfield Township - Circulation Element ($50,000)</li>
+									<li>Mount Laurel Township - Bicycle and Pedestrian Plan ($32,000)</li>
+									<li>Palmyra Borough - Traffic Calming ($32,000)</li>
+									<li>Camden City - Haddon Avenue Transit Corridor ($50,000)</li>
+									<li>Cherry Hill Township - TOD Overlay ($60,000)</li>
+									<li>County-wide - Land Use Element/Summary Brief ($150,000)</li>
+									<li>Gloucester Township - Blackwood Streetscape ($50,000)</li>
+									<li>Merchantville Borough - West Maple Neighborhood Revitalization Plan - Phase 2 ($40,000)</li>
+									<li>Stratford Borough - Revitalization Plan for Bradlees Site ($40,000)</li>
+									<li>Voorhees Township - Bicycle and Pedestrian Plan ($66,000)</li>
+									<li>Swedesboro Borough - Marketing Plan ($50,000)</li>
+									<li>East Windsor Township - NJ Turnpike Development Sudy ($100,000)</li>
+									<li>Ewing Township - Ewing Town Center ($100,000)</li>
+									<li>Lawrence Township - Johnson Trolley Line Missing Link ($45,000)</li>
+									<li>Pennington Borough - Route 31 Corridor Redevelopment ($30,000)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	</div>
+
+	<!-- 2015 TCDI Project Modal -->    
+	<div class="modal fade" id="Projects-15">
+		<div class="modal-dialog modal-lg" style="width: 665px;">
+			<div class="modal-content">
+			    <div class="modal-header" style="background-color:#0074ad">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2015</strong></h4>
+	        </div> 
+		<div class="modal-body">
+			<ul id="tabs15" class="nav nav-tabs">
+				<li class="active"><a href="#PA15" data-toggle="tab"><b>Pennsylvania</b></a></li>
+				<li><a href="#NJ15" data-toggle="tab"><b>New Jersey</b></a></li>
+			</ul>
+					<div class="row">
+						<div class="col-xs-12">
+							<div id="content15" class="tab-content" style="padding-top: 10px;">
+								<div class="tab-pane fade active in" id="PA15">
+									<ul>
+										<li>Bensalem Township -	Bensalem Riverfont Master Plan Evaluation and Implementation Plan ($100,000)</li>
+										<li>Multiple Municipalities (Bucks County) - Cross Keys Planning and Transportation Study ($80,000)</li>
+										<li>New Britain Borough	- Main Street ($80,000)</li>
+										<li>Caln Township -	Route 30 Multi-Modal Transportation Plan ($75,000)</li>
+										<li>Coatesville City - Downtown Parking Study ($20,000)</li>
+										<li>Phoenixville Borough - SALDO Update ($20,000)</li>
+										<li>Schuylkill Township - Schuylkill Sidwalk System	($60,000)</li>
+										<li>Aston Township - Comprehensive Plan Update, Ordinance Revisions ($88,000)</li>
+										<li>Clifton Heights Borough - Clifton Heights Market Study ($20,000)</li>
+										<li>Media Borough -	Wayfinding Signage Plan	($40,000)</li>
+										<li>Multiple Municipalities (Delaware County) -	Technical Asssistance for Energy Efficiency in Local Government Operations ($76,000)</li>
+										<li>Abington Township -	Master Bicycle Plan ($60,000)</li>
+										<li>Lower Moreland Township	- Historic Bethayres Streetscape Plan ($20,000)</li>
+										<li>Montgomery County -	Walkability Plan ($50,000)</li>
+										<li>Upper Merion Township -	First Avenue Linear Park Concept Plan ($88,000)</li>
+										<li>Whitemarsh Township	- Riverfront Plan ($48,000)</li>
+										<li>Philadelphia City -	Complete Streets Improvements Plan ($100,000)</li>
+										<li>Philadelphia City -	University City Access Study ($75,000)</li>
+										<li>Philadelphia City -	Rails and Trails: Trail Feasibility in Philadelphia	($100,000)</li>
+									</ul>
+								</div>
+								<div class="tab-pane" id="NJ15">
+									<ul>
+										<li>Bordentown City - Ocean Spray Redevelopment and Linkage Plan ($100,000)</li>
+										<li>New Hanover Township - Wrightstown Cookstown Redevelopment Plan ($50,000)</li>
+										<li>Pemberton Township - Complete Streets Policy and Plan ($50,000)</li>
+										<li>Rancocas Creek Greenway - Rancocas Creek Greenway, Amico Island Park ($95,000)</li>
+										<li>Audubon Borough - East Atlantic Avenue Corridor Multi-Use Improvement Study	($60,000)</li>
+										<li>Camden City	- Downtown Corridors Traffic Feasibility Study ($60,000)</li>
+										<li>Gloucester Township	- Blackhorse Pike Corridor Wayfinding Plan ($64,000)</li>
+										<li>Merchantville Borough - Town Centre East Redevelopment Plan	($35,000)</li>
+										<li>Gloucester County -	Master Plan for the New Millennium-Unified Land Use and Circulation Element	($125,000)</li>
+										<li>Monroe Township - Multi Modal Transportation System Master Plan ($85,000)</li>
+										<li>Woodbury City - Transportation Hub Feasibility Study/Analysis ($75,000)</li>
+										<li>Woolwich Township -	Unified Land Use and Transportation Master Plan	($100,000)</li>
+										<li>Trenton City - Trenton250-Downtown Planning District Parking Plan ($100,000)</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>	
+		</div>
+	</div>
+
+	<!-- 2017 TCDI Project Modal -->    
+		<div class="modal fade" id="Projects-17">
+			<div class="modal-dialog modal-lg" style="width: 665px;">
+				<div class="modal-content">
+				    <div class="modal-header" style="background-color:#0074ad">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                	<h4 class="modal-title" style="text-align: center;"><strong>Awarded TCDI Projects -- Year 2017</strong></h4>
+		        	</div> 
+					<div class="modal-body">
+						<ul id="tabs17" class="nav nav-tabs">
+							<li class="active"><a href="#PA17" data-toggle="tab"><b>Pennsylvania</b></a></li>
+							<li><a href="#NJ17" data-toggle="tab"><b>New Jersey</b></a></li>
+						</ul>
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="content17" class="tab-content" style="padding-top: 10px;">
+									<div class="tab-pane fade active in" id="PA17">
+										<ul>
+											<li>Bristol Township - Economic Development Analysis ($80,000)</li>
+											<li>Multiple Municipalities (Chester County) -	Phoenixville Region Multi-Modal Transportation Plan	($52,000)</li>
+											<li>East Goshen Township - Paoli Pike Corridor Master Plan	($52,500)</li>
+											<li>East Whiteland Township - Route 30 Corridor Study ($75,000)</li>
+											<li>Chester County - Brandywine Valley Wayfinding Signage Plan ($40,000)</li>
+											<li>Phoenixville Borough - Downtown Parking Study ($34,000)</li>
+											<li>West Whiteland Township - Pottstown Pike Congestion Mitigation Feasibility Study ($25,000)</li>
+											<li>Delaware County - Downtown Awakening: Central Places Visioning ($80,000)</li>
+											<li>Media Borough - Updated Economic Development Strategy ($56,250)</li>
+											<li>Morton Borough - Morton Connect ($36,000)</li>
+											<li>Upper Darby Township - Multi-Modal Modernization of the Garrett Road Corridor ($71,250)</li>
+											<li>Montgomery County -	Bike Montco Plan Development ($30,000)</li>
+											<li>Abington Township -	Walk Park Train	($75,000)</li>
+											<li>Lansdale Borough - Liberty Bell Trail Alignment Study ($28,000)</li>
+											<li>Lower Providence Township - Ridge Pike West Corridor Study ($80,000)</li>
+											<li>Upper Dublin Township - Transportation Demand Plan (TDM) Plan for the Ft. Washington Office Park ($75,000)</li>
+											<li>Philadelphia City -	Where the Sidewalk Gaps: A Program for Prioritizing Repairs	($100,000)</li>
+											<li>Philadelphia City -	Complete Streets Calculator	($80,000)	</li>
+											<li>Philadelphia City -	Critical Matchmaking between Vision Zero Research and Practice	($30,000)	</li>
+											<li>Philadelphia County (Lower Northwest Planning District) - Wissahickon Gateway ($100,000)</li>
+									</div>
+									<div class="tab-pane" id="NJ17">
+										<ul>
+											<li>Multiple Municipalities (Burlington County) - River Route Circulation Plan ($175,000)</li>
+											<li>Multiple Municipalities (Burlington County)	- Conceptual Design Plan to Route 130 Intersections ($100,000)</li>
+											<li>Cherry Hill Township - Woodcrest Station Transit-Oriented Development (TOD) Plan ($60,000)</li>
+											<li>Camden City - Walter Rand Market Feasibility & Station Redesign ($100,000)</li>
+											<li>Princeton Township - Princeton Parking: Inventory, Analysis & Recommendations ($65,000)</li>
+											<li>Trenton City - Waterfront Reclamation and Redevelopment Project	($100,000)</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
+		</div>
+
+    <!-- Load Esri Leaflet from CDN -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script> 
+  <script type="text/javascript" src="https://unpkg.com/esri-leaflet@2.0.7"></script>
+ <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script> -->
+
+         <!-- Load Esri Leaflet from CDN -->
+
+	<script type="text/javascript" src="js/geojson-utils.js"></script>
+	<script type="text/javascript" src="js/leaflet.viewcenter.js"></script>
+	<script type="text/javascript" src="js/leaflet-providers.js"></script> 
+	<script type="text/javascript" src="js/esri-leaflet-geocoder.js"></script>
+	<script type="text/javascript" src="js/bootstrap-slider.js"></script>
+	<script type="text/javascript" src="js/numeral.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+
+  </body>
+</html>

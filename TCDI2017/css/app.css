@@ -1,0 +1,85 @@
+#titlepr {
+color:white;
+padding:5px;
+-webkit-border-top-left-radius: 4px;
+-webkit-border-bottom-left-radius: 4px;
+-webkit-border-top-right-radius: 4px;
+-webkit-border-bottom-right-radius: 4px;
+}
+
+#money {
+border-color: rgba(0,0,0,0.25);
+border-radius: 2px;
+border-style: solid;
+border-width: 2px;
+-webkit-border-top-left-radius: 4px;
+-webkit-border-bottom-left-radius: 4px;
+-webkit-border-top-right-radius: 4px;
+-webkit-border-bottom-right-radius: 4px;
+font-size: 25px;
+color: #312B6A
+font-weight: 700;
+margin-left:15px;
+text-align: center;
+}
+#money2 {
+font-size: 15px;
+color: #636363;
+font-weight: 400;
+}
+#labelfield {
+font-size: 10;
+color: black;
+margin: 2px 8px 0px 0px;
+float: right;
+text-align: right;
+}
+#labeltcdi {
+font-size: 10;
+font-weight: bold;
+color: white;
+}
+
+.legendButton{
+	padding: 0px!important;
+	width: 100%;
+}
+
+.legendButtonToggled {
+	padding: 0px!important;	
+	width: 100%;
+	opacity: .4;
+}
+
+.legendCheck {
+	display: none;
+}
+
+.yr2002{
+	color: #CC2127;
+}
+
+.yr2003{
+	color: #F36D44;
+}
+.yr2004{
+	color: #83C1EA;
+}
+.yr2005{
+	color: #87BB40;
+}
+.yr2007{
+	color: #CE1688;
+}
+.yr2010{
+	color: #B53F97;
+}
+.yr2012{
+	color: #0062A7;
+}
+.yr2015{
+	color: #F7C17C;
+}
+.yr2017{
+	color: #1C9647;
+}
